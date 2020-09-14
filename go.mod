@@ -1,4 +1,4 @@
-module github.com/google/go-containerregistry
+module github.com/danielsel/go-containerregistry
 
 go 1.13
 
