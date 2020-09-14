@@ -25,22 +25,22 @@ import (
 )
 
 // Option is a functional option for remote operations.
-type Option func(*options) error
+type Option func(*Options) error
 
-type options struct {
-	auth      authn.Authenticator
-	keychain  authn.Keychain
-	transport http.RoundTripper
-	platform  v1.Platform
-	context   context.Context
+type Options struct {
+	Auth      authn.Authenticator
+	Keychain  authn.Keychain
+	Transport http.RoundTripper
+	Platform  v1.Platform
+	Context   context.Context
 }
 
-func makeOptions(target authn.Resource, opts ...Option) (*options, error) {
-	o := &options{
-		auth:      authn.Anonymous,
-		transport: http.DefaultTransport,
-		platform:  defaultPlatform,
-		context:   context.Background(),
+func makeOptions(target authn.Resource, opts ...Option) (*Options, error) {
+	o := &Options{
+		Auth:      authn.Anonymous,
+		Transport: http.DefaultTransport,
+		Platform:  defaultPlatform,
+		Context:   context.Background(),
 	}
 
 	for _, option := range opts {
@@ -49,26 +49,26 @@ func makeOptions(target authn.Resource, opts ...Option) (*options, error) {
 		}
 	}
 
-	if o.keychain != nil {
-		auth, err := o.keychain.Resolve(target)
+	if o.Keychain != nil {
+		auth, err := o.Keychain.Resolve(target)
 		if err != nil {
 			return nil, err
 		}
 		if auth == authn.Anonymous {
 			logs.Warn.Println("No matching credentials were found, falling back on anonymous")
 		}
-		o.auth = auth
+		o.Auth = auth
 	}
 
 	// Wrap the transport in something that logs requests and responses.
 	// It's expensive to generate the dumps, so skip it if we're writing
 	// to nothing.
 	if logs.Enabled(logs.Debug) {
-		o.transport = transport.NewLogger(o.transport)
+		o.Transport = transport.NewLogger(o.Transport)
 	}
 
 	// Wrap the transport in something that can retry network flakes.
-	o.transport = transport.NewRetry(o.transport)
+	o.Transport = transport.NewRetry(o.Transport)
 
 	return o, nil
 }
@@ -78,8 +78,8 @@ func makeOptions(target authn.Resource, opts ...Option) (*options, error) {
 //
 // The default transport its http.DefaultTransport.
 func WithTransport(t http.RoundTripper) Option {
-	return func(o *options) error {
-		o.transport = t
+	return func(o *Options) error {
+		o.Transport = t
 		return nil
 	}
 }
@@ -89,8 +89,8 @@ func WithTransport(t http.RoundTripper) Option {
 //
 // The default authenticator is authn.Anonymous.
 func WithAuth(auth authn.Authenticator) Option {
-	return func(o *options) error {
-		o.auth = auth
+	return func(o *Options) error {
+		o.Auth = auth
 		return nil
 	}
 }
@@ -101,8 +101,8 @@ func WithAuth(auth authn.Authenticator) Option {
 //
 // The default authenticator is authn.Anonymous.
 func WithAuthFromKeychain(keys authn.Keychain) Option {
-	return func(o *options) error {
-		o.keychain = keys
+	return func(o *Options) error {
+		o.Keychain = keys
 		return nil
 	}
 }
@@ -112,8 +112,8 @@ func WithAuthFromKeychain(keys authn.Keychain) Option {
 //
 // The default platform is amd64/linux.
 func WithPlatform(p v1.Platform) Option {
-	return func(o *options) error {
-		o.platform = p
+	return func(o *Options) error {
+		o.Platform = p
 		return nil
 	}
 }
@@ -126,8 +126,8 @@ func WithPlatform(p v1.Platform) Option {
 //
 // The default context is context.Background().
 func WithContext(ctx context.Context) Option {
-	return func(o *options) error {
-		o.context = ctx
+	return func(o *Options) error {
+		o.Context = ctx
 		return nil
 	}
 }

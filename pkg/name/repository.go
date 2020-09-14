@@ -94,7 +94,7 @@ func NewRepository(name string, opts ...Option) (Repository, error) {
 	if err != nil {
 		return Repository{}, err
 	}
-	if hasImplicitNamespace(repo, reg) && opt.strict {
+	if hasImplicitNamespace(repo, reg) && opt.Strict {
 		return Repository{}, NewErrBadName("strict validation requires the full repository path (missing 'library')")
 	}
 	return Repository{reg, repo}, nil

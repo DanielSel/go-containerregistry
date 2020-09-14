@@ -52,14 +52,14 @@ func Write(ref name.Reference, img v1.Image, options ...Option) error {
 	}
 
 	scopes := scopesForUploadingImage(ref.Context(), ls)
-	tr, err := transport.New(ref.Context().Registry, o.auth, o.transport, scopes)
+	tr, err := transport.New(ref.Context().Registry, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return err
 	}
 	w := writer{
 		repo:    ref.Context(),
 		client:  &http.Client{Transport: tr},
-		context: o.context,
+		context: o.Context,
 	}
 
 	// Upload individual layers in goroutines and collect any errors.
@@ -493,14 +493,14 @@ func WriteIndex(ref name.Reference, ii v1.ImageIndex, options ...Option) error {
 		return err
 	}
 	scopes := []string{ref.Scope(transport.PushScope)}
-	tr, err := transport.New(ref.Context().Registry, o.auth, o.transport, scopes)
+	tr, err := transport.New(ref.Context().Registry, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return err
 	}
 	w := writer{
 		repo:    ref.Context(),
 		client:  &http.Client{Transport: tr},
-		context: o.context,
+		context: o.Context,
 	}
 
 	for _, desc := range index.Manifests {
@@ -521,7 +521,7 @@ func WriteIndex(ref name.Reference, ii v1.ImageIndex, options ...Option) error {
 				return err
 			}
 
-			if err := WriteIndex(ref, ii, WithAuth(o.auth), WithTransport(o.transport)); err != nil {
+			if err := WriteIndex(ref, ii, WithAuth(o.Auth), WithTransport(o.Transport)); err != nil {
 				return err
 			}
 		case types.OCIManifestSchema1, types.DockerManifestSchema2:
@@ -529,7 +529,7 @@ func WriteIndex(ref name.Reference, ii v1.ImageIndex, options ...Option) error {
 			if err != nil {
 				return err
 			}
-			if err := Write(ref, img, WithAuth(o.auth), WithTransport(o.transport)); err != nil {
+			if err := Write(ref, img, WithAuth(o.Auth), WithTransport(o.Transport)); err != nil {
 				return err
 			}
 		}
@@ -547,14 +547,14 @@ func WriteLayer(repo name.Repository, layer v1.Layer, options ...Option) error {
 		return err
 	}
 	scopes := scopesForUploadingImage(repo, []v1.Layer{layer})
-	tr, err := transport.New(repo.Registry, o.auth, o.transport, scopes)
+	tr, err := transport.New(repo.Registry, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return err
 	}
 	w := writer{
 		repo:    repo,
 		client:  &http.Client{Transport: tr},
-		context: o.context,
+		context: o.Context,
 	}
 
 	return w.uploadOne(layer)
@@ -574,14 +574,14 @@ func Tag(tag name.Tag, t Taggable, options ...Option) error {
 	// * Allow callers to pass in a transport.Transport, typecheck
 	//   it to allow them to reuse the transport across multiple calls.
 	// * WithTag option to do multiple manifest PUTs in commitImage.
-	tr, err := transport.New(tag.Context().Registry, o.auth, o.transport, scopes)
+	tr, err := transport.New(tag.Context().Registry, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return err
 	}
 	w := writer{
 		repo:    tag.Context(),
 		client:  &http.Client{Transport: tr},
-		context: o.context,
+		context: o.Context,
 	}
 
 	return w.commitImage(t, tag)

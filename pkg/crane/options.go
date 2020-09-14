@@ -22,14 +22,14 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/remote"
 )
 
-type options struct {
-	name   []name.Option
-	remote []remote.Option
+type Options struct {
+	Name   []name.Option
+	Remote []remote.Option
 }
 
-func makeOptions(opts ...Option) options {
-	opt := options{
-		remote: []remote.Option{
+func makeOptions(opts ...Option) Options {
+	opt := Options{
+		Remote: []remote.Option{
 			remote.WithAuthFromKeychain(authn.DefaultKeychain),
 		},
 	}
@@ -40,17 +40,17 @@ func makeOptions(opts ...Option) options {
 }
 
 // Option is a functional option for crane.
-type Option func(*options)
+type Option func(*Options)
 
 // WithTransport is a functional option for overriding the default transport
 // for remote operations.
 func WithTransport(t http.RoundTripper) Option {
-	return func(o *options) {
-		o.remote = append(o.remote, remote.WithTransport(t))
+	return func(o *Options) {
+		o.Remote = append(o.Remote, remote.WithTransport(t))
 	}
 }
 
 // Insecure is an Option that allows image references to be fetched without TLS.
-func Insecure(o *options) {
-	o.name = append(o.name, name.Insecure)
+func Insecure(o *Options) {
+	o.Name = append(o.Name, name.Insecure)
 }

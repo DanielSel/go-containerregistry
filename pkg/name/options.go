@@ -14,13 +14,13 @@
 
 package name
 
-type options struct {
-	strict   bool // weak by default
-	insecure bool // secure by default
+type Options struct {
+	Strict   bool // weak by default
+	Insecure bool // secure by default
 }
 
-func makeOptions(opts ...Option) options {
-	opt := options{}
+func makeOptions(opts ...Option) Options {
+	opt := Options{}
 	for _, o := range opts {
 		o(&opt)
 	}
@@ -28,22 +28,22 @@ func makeOptions(opts ...Option) options {
 }
 
 // Option is a functional option for name parsing.
-type Option func(*options)
+type Option func(*Options)
 
 // StrictValidation is an Option that requires image references to be fully
 // specified; i.e. no defaulting for registry (dockerhub), repo (library),
 // or tag (latest).
-func StrictValidation(opts *options) {
-	opts.strict = true
+func StrictValidation(opts *Options) {
+	opts.Strict = true
 }
 
 // WeakValidation is an Option that sets defaults when parsing names, see
 // StrictValidation.
-func WeakValidation(opts *options) {
-	opts.strict = false
+func WeakValidation(opts *Options) {
+	opts.Strict = false
 }
 
 // Insecure is an Option that allows image references to be fetched without TLS.
-func Insecure(opts *options) {
-	opts.insecure = true
+func Insecure(opts *Options) {
+	opts.Insecure = true
 }

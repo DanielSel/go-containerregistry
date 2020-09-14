@@ -19,15 +19,15 @@ import (
 )
 
 // Option is a functional option for gcrane operations.
-type Option func(*options)
+type Option func(*Options)
 
-type options struct {
-	jobs int
+type Options struct {
+	Jobs int
 }
 
-func makeOptions(opts ...Option) *options {
-	o := &options{
-		jobs: runtime.GOMAXPROCS(0),
+func makeOptions(opts ...Option) *Options {
+	o := &Options{
+		Jobs: runtime.GOMAXPROCS(0),
 	}
 
 	for _, option := range opts {
@@ -41,7 +41,7 @@ func makeOptions(opts ...Option) *options {
 //
 // The default number of jobs is GOMAXPROCS.
 func WithJobs(jobs int) Option {
-	return func(o *options) {
-		o.jobs = jobs
+	return func(o *Options) {
+		o.Jobs = jobs
 	}
 }

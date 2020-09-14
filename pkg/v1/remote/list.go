@@ -44,7 +44,7 @@ func ListWithContext(ctx context.Context, repo name.Repository, options ...Optio
 		return nil, err
 	}
 	scopes := []string{repo.Scope(transport.PullScope)}
-	tr, err := transport.New(repo.Registry, o.auth, o.transport, scopes)
+	tr, err := transport.New(repo.Registry, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +61,8 @@ func ListWithContext(ctx context.Context, repo name.Repository, options ...Optio
 	// This is lazy, but I want to make sure List(..., WithContext(ctx)) works
 	// without calling makeOptions() twice (which can have side effects).
 	// This means ListWithContext(ctx, ..., WithContext(ctx2)) prefers ctx2.
-	if o.context != context.Background() {
-		ctx = o.context
+	if o.Context != context.Background() {
+		ctx = o.Context
 	}
 
 	client := http.Client{Transport: tr}

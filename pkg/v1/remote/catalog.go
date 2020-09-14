@@ -37,7 +37,7 @@ func CatalogPage(target name.Registry, last string, n int, options ...Option) ([
 	}
 
 	scopes := []string{target.Scope(transport.PullScope)}
-	tr, err := transport.New(target, o.auth, o.transport, scopes)
+	tr, err := transport.New(target, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func CatalogPage(target name.Registry, last string, n int, options ...Option) ([
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.Do(req.WithContext(o.context))
+	resp, err := client.Do(req.WithContext(o.Context))
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func Catalog(ctx context.Context, target name.Registry, options ...Option) ([]st
 	}
 
 	scopes := []string{target.Scope(transport.PullScope)}
-	tr, err := transport.New(target, o.auth, o.transport, scopes)
+	tr, err := transport.New(target, o.Auth, o.Transport, scopes)
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +97,8 @@ func Catalog(ctx context.Context, target name.Registry, options ...Option) ([]st
 	client := http.Client{Transport: tr}
 
 	// WithContext overrides the ctx passed directly.
-	if o.context != context.Background() {
-		ctx = o.context
+	if o.Context != context.Background() {
+		ctx = o.Context
 	}
 
 	var (

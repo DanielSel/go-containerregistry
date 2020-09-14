@@ -82,7 +82,7 @@ func CopyRepository(ctx context.Context, src, dst string, opts ...Option) error 
 		authn.DefaultKeychain = original
 	}()
 	o := makeOptions(opts...)
-	return recursiveCopy(ctx, src, dst, o.jobs)
+	return recursiveCopy(ctx, src, dst, o.Jobs)
 }
 
 type task struct {

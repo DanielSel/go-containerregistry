@@ -116,7 +116,7 @@ func checkRegistry(name string) error {
 // Strict validation requires explicit, valid RFC 3986 URI authorities to be given.
 func NewRegistry(name string, opts ...Option) (Registry, error) {
 	opt := makeOptions(opts...)
-	if opt.strict && len(name) == 0 {
+	if opt.Strict && len(name) == 0 {
 		return Registry{}, NewErrBadName("strict validation requires the registry to be explicitly defined")
 	}
 
@@ -130,7 +130,7 @@ func NewRegistry(name string, opts ...Option) (Registry, error) {
 		name = DefaultRegistry
 	}
 
-	return Registry{registry: name, insecure: opt.insecure}, nil
+	return Registry{registry: name, insecure: opt.Insecure}, nil
 }
 
 // NewInsecureRegistry returns an Insecure Registry based on the given name.

@@ -28,18 +28,18 @@ import (
 // Copy copies a remote image or index from src to dst.
 func Copy(src, dst string, opt ...Option) error {
 	o := makeOptions(opt...)
-	srcRef, err := name.ParseReference(src, o.name...)
+	srcRef, err := name.ParseReference(src, o.Name...)
 	if err != nil {
 		return fmt.Errorf("parsing reference %q: %v", src, err)
 	}
 
-	dstRef, err := name.ParseReference(dst, o.name...)
+	dstRef, err := name.ParseReference(dst, o.Name...)
 	if err != nil {
 		return fmt.Errorf("parsing reference for %q: %v", dst, err)
 	}
 
 	logs.Progress.Printf("Copying from %v to %v", srcRef, dstRef)
-	desc, err := remote.Get(srcRef, o.remote...)
+	desc, err := remote.Get(srcRef, o.Remote...)
 	if err != nil {
 		return fmt.Errorf("fetching %q: %v", src, err)
 	}
@@ -65,20 +65,20 @@ func Copy(src, dst string, opt ...Option) error {
 	return nil
 }
 
-func copyImage(desc *remote.Descriptor, dstRef name.Reference, o options) error {
+func copyImage(desc *remote.Descriptor, dstRef name.Reference, o Options) error {
 	img, err := desc.Image()
 	if err != nil {
 		return err
 	}
-	return remote.Write(dstRef, img, o.remote...)
+	return remote.Write(dstRef, img, o.Remote...)
 }
 
-func copyIndex(desc *remote.Descriptor, dstRef name.Reference, o options) error {
+func copyIndex(desc *remote.Descriptor, dstRef name.Reference, o Options) error {
 	idx, err := desc.ImageIndex()
 	if err != nil {
 		return err
 	}
-	return remote.WriteIndex(dstRef, idx, o.remote...)
+	return remote.WriteIndex(dstRef, idx, o.Remote...)
 }
 
 func copySchema1(desc *remote.Descriptor, srcRef, dstRef name.Reference) error {

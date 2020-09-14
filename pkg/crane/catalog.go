@@ -24,10 +24,10 @@ import (
 // Catalog returns the repositories in a registry's catalog.
 func Catalog(src string, opt ...Option) (res []string, err error) {
 	o := makeOptions(opt...)
-	reg, err := name.NewRegistry(src, o.name...)
+	reg, err := name.NewRegistry(src, o.Name...)
 	if err != nil {
 		return nil, err
 	}
 
-	return remote.Catalog(context.TODO(), reg, o.remote...)
+	return remote.Catalog(context.TODO(), reg, o.Remote...)
 }

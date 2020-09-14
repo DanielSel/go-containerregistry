@@ -39,32 +39,32 @@ type retryTransport struct {
 }
 
 // Option is a functional option for retryTransport.
-type Option func(*options)
+type Option func(*Options)
 
-type options struct {
-	backoff   retry.Backoff
-	predicate retry.Predicate
+type Options struct {
+	Backoff   retry.Backoff
+	Predicate retry.Predicate
 }
 
 // WithRetryBackoff sets the backoff for retry operations.
 func WithRetryBackoff(backoff retry.Backoff) Option {
-	return func(o *options) {
-		o.backoff = backoff
+	return func(o *Options) {
+		o.Backoff = backoff
 	}
 }
 
 // WithRetryPredicate sets the predicate for retry operations.
 func WithRetryPredicate(predicate func(error) bool) Option {
-	return func(o *options) {
-		o.predicate = predicate
+	return func(o *Options) {
+		o.Predicate = predicate
 	}
 }
 
 // NewRetry returns a transport that retries errors.
 func NewRetry(inner http.RoundTripper, opts ...Option) http.RoundTripper {
-	o := &options{
-		backoff:   defaultBackoff,
-		predicate: retry.IsTemporary,
+	o := &Options{
+		Backoff:   defaultBackoff,
+		Predicate: retry.IsTemporary,
 	}
 
 	for _, opt := range opts {
@@ -73,8 +73,8 @@ func NewRetry(inner http.RoundTripper, opts ...Option) http.RoundTripper {
 
 	return &retryTransport{
 		inner:     inner,
-		backoff:   o.backoff,
-		predicate: o.predicate,
+		backoff:   o.Backoff,
+		predicate: o.Predicate,
 	}
 }
 
